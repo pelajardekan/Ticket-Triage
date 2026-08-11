@@ -1,0 +1,3 @@
+# Everything in the function app, plus the test runner.
+-r api/requirements.txt
+pytest>=8.0.0

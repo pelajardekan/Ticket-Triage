@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" font-family="Segoe UI, system-ui, -apple-system, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6379"/>
+    </marker>
+    <marker id="arrowBrand" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0078d4"/>
+    </marker>
+    <style>
+      .t   { fill:#1b2130; }
+      .sub { fill:#5a6379; }
+      .hh  { font-size:13px; font-weight:700; }
+      .b   { font-size:12.5px; }
+      .s   { font-size:11px; }
+      .mono{ font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:11.5px; }
+      .lbl { font-size:11px; font-weight:600; fill:#5a6379; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="800" fill="#f4f6fb"/>
+
+  <text x="40" y="40" class="t" font-size="21" font-weight="700">TicketTriage &#183; system architecture</text>
+  <text x="40" y="62" class="sub" font-size="13">AI-200 capstone &#183; Azure free-tier services only</text>
+
+  <!-- ================= BAND 1: build and deploy ================= -->
+  <text x="40" y="103" class="lbl" letter-spacing="1.2">BUILD AND DEPLOY</text>
+
+  <rect x="40" y="114" width="205" height="56" rx="9" fill="#ffffff" stroke="#dfe3ec"/>
+  <text x="60" y="139" class="t hh">GitHub repository</text>
+  <text x="60" y="157" class="sub s">frontend/ &#183; api/ &#183; tests/</text>
+
+  <line x1="253" y1="142" x2="303" y2="142" stroke="#5a6379" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="256" y="134" class="sub s">push</text>
+
+  <rect x="311" y="114" width="235" height="56" rx="9" fill="#ffffff" stroke="#dfe3ec"/>
+  <text x="331" y="139" class="t hh">GitHub Actions workflow</text>
+  <text x="331" y="157" class="sub s">pytest, then upload</text>
+
+  <line x1="554" y1="142" x2="604" y2="142" stroke="#5a6379" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <rect x="612" y="114" width="248" height="56" rx="9" fill="#ffffff" stroke="#dfe3ec"/>
+  <text x="632" y="139" class="t hh">Deployment token</text>
+  <text x="632" y="157" class="sub s">GitHub repository secret</text>
+
+  <path d="M 736 172 L 736 212" stroke="#0078d4" stroke-width="1.8" fill="none" marker-end="url(#arrowBrand)"/>
+  <text x="746" y="196" class="lbl" fill="#0078d4">deploys</text>
+
+  <!-- ================= BAND 2: runtime ================= -->
+  <text x="40" y="252" class="lbl" letter-spacing="1.2">RUNTIME</text>
+
+  <!-- Browser -->
+  <rect x="40" y="300" width="205" height="168" rx="10" fill="#ffffff" stroke="#dfe3ec"/>
+  <path d="M 40 310 a10 10 0 0 1 10 -10 h185 a10 10 0 0 1 10 10 v20 h-205 z" fill="#eef1f7"/>
+  <circle cx="58" cy="315" r="4" fill="#c9cfdc"/><circle cx="72" cy="315" r="4" fill="#c9cfdc"/><circle cx="86" cy="315" r="4" fill="#c9cfdc"/>
+  <text x="106" y="319" class="sub s">Browser</text>
+
+  <rect x="58" y="348" width="169" height="47" rx="7" fill="#f7f9fc" stroke="#e6eaf2"/>
+  <text x="72" y="368" class="t b" font-weight="600">Student</text>
+  <text x="72" y="385" class="sub mono">/  ticket form</text>
+
+  <rect x="58" y="406" width="169" height="47" rx="7" fill="#f7f9fc" stroke="#e6eaf2"/>
+  <text x="72" y="426" class="t b" font-weight="600">Admin</text>
+  <text x="72" y="443" class="sub mono">/admin  review</text>
+
+  <line x1="253" y1="384" x2="303" y2="384" stroke="#5a6379" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="252" y="376" class="sub s">HTTPS</text>
+
+  <!-- Static Web App -->
+  <rect x="311" y="212" width="410" height="370" rx="12" fill="#ffffff" stroke="#0078d4" stroke-width="1.8"/>
+  <path d="M 311 224 a12 12 0 0 1 12 -12 h386 a12 12 0 0 1 12 12 v34 h-410 z" fill="#e8f2fc"/>
+  <text x="331" y="235" class="t hh" fill="#0b4f8a">Azure Static Web Apps</text>
+  <text x="331" y="251" class="s" fill="#0b4f8a">Free plan &#183; 100 GB bandwidth/month &#183; free SSL</text>
+
+  <rect x="333" y="276" width="366" height="66" rx="8" fill="#f7f9fc" stroke="#e6eaf2"/>
+  <text x="351" y="298" class="t b" font-weight="700">Static content</text>
+  <text x="351" y="317" class="sub mono">frontend/  index.html  admin.html  css  js</text>
+  <text x="351" y="334" class="sub s">Served from the edge. No build step, no framework.</text>
+
+  <rect x="333" y="358" width="366" height="204" rx="8" fill="#f7f9fc" stroke="#e6eaf2"/>
+  <text x="351" y="380" class="t b" font-weight="700">Managed Functions API</text>
+  <text x="351" y="397" class="sub s">Python 3.11 &#183; apiRuntime in staticwebapp.config.json</text>
+
+  <line x1="351" y1="407" x2="681" y2="407" stroke="#e6eaf2"/>
+  <text x="351" y="426" class="t mono">POST&#160;&#160;/api/tickets</text>
+  <text x="351" y="445" class="t mono">GET&#160;&#160;&#160;/api/tickets?category=&amp;status=&amp;email=&amp;q=</text>
+  <text x="351" y="464" class="t mono">GET&#160;&#160;&#160;/api/tickets/{id}</text>
+  <text x="351" y="483" class="t mono">PATCH /api/tickets/{id}</text>
+  <text x="351" y="502" class="t mono">GET&#160;&#160;&#160;/api/categories&#160;&#160;&#160;/api/health</text>
+
+  <rect x="351" y="516" width="330" height="34" rx="6" fill="#eef4ff" stroke="#c9d9f7"/>
+  <circle cx="371" cy="533" r="9" fill="#5a6379"/><text x="371" y="537" class="s" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+  <text x="388" y="537" class="t s" font-weight="600">Keyword rules &#183; in-process, always free</text>
+
+  <!-- arrows out -->
+  <line x1="729" y1="330" x2="791" y2="330" stroke="#5a6379" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="731" y="322" class="sub s">SDK</text>
+  <line x1="729" y1="455" x2="791" y2="455" stroke="#5a6379" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="731" y="447" class="sub s">REST</text>
+
+  <!-- Cosmos DB -->
+  <rect x="799" y="278" width="361" height="112" rx="10" fill="#ffffff" stroke="#dfe3ec"/>
+  <rect x="799" y="278" width="6" height="112" fill="#0078d4"/>
+  <text x="821" y="303" class="t hh">Azure Cosmos DB for NoSQL</text>
+  <text x="821" y="321" class="s" fill="#0b5c34" font-weight="600">Free tier &#183; 1,000 RU/s + 25 GB, account lifetime</text>
+  <text x="821" y="343" class="sub mono">database: tickettriage</text>
+  <text x="821" y="360" class="sub mono">container: tickets &#183; partition key /id</text>
+  <text x="821" y="379" class="sub s">One free-tier account per subscription. Opt in at creation.</text>
+
+  <!-- AI Language -->
+  <rect x="799" y="410" width="361" height="172" rx="10" fill="#ffffff" stroke="#dfe3ec"/>
+  <rect x="799" y="410" width="6" height="172" fill="#8661c5"/>
+  <text x="821" y="435" class="t hh">Azure AI Language</text>
+  <text x="821" y="453" class="s" fill="#0b5c34" font-weight="600">F0 free tier &#183; 5,000 text records per month</text>
+
+  <rect x="821" y="465" width="320" height="46" rx="7" fill="#f7f9fc" stroke="#e6eaf2"/>
+  <circle cx="841" cy="488" r="9" fill="#1f4ed8"/><text x="841" y="492" class="s" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+  <text x="859" y="484" class="t s" font-weight="700">Key Phrase Extraction</text>
+  <text x="859" y="500" class="sub s">Prebuilt. No training. The default AI path.</text>
+
+  <rect x="821" y="519" width="320" height="46" rx="7" fill="#f7f9fc" stroke="#e6eaf2" stroke-dasharray="4 3"/>
+  <circle cx="841" cy="542" r="9" fill="#8661c5"/><text x="841" y="546" class="s" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+  <text x="859" y="538" class="t s" font-weight="700">Custom Text Classification</text>
+  <text x="859" y="554" class="sub s">Optional bonus. Needs labelled data + training.</text>
+
+  <!-- ================= BAND 3 ================= -->
+  <text x="40" y="632" class="lbl" letter-spacing="1.2">CLASSIFICATION CASCADE</text>
+  <rect x="40" y="644" width="681" height="118" rx="10" fill="#ffffff" stroke="#dfe3ec"/>
+  <text x="60" y="670" class="sub b">Each stage is tried in order. Any stage may fail &#8212; missing key, network error, exhausted quota &#8212;</text>
+  <text x="60" y="688" class="sub b">and the next takes over, so submitting a ticket never breaks.</text>
+
+  <circle cx="76" cy="722" r="11" fill="#8661c5"/><text x="76" y="726" class="s" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+  <text x="94" y="719" class="t s" font-weight="700">Custom model</text>
+  <text x="94" y="734" class="sub s">best quality</text>
+  <text x="205" y="727" class="sub" font-size="16">&#8594;</text>
+
+  <circle cx="248" cy="722" r="11" fill="#1f4ed8"/><text x="248" y="726" class="s" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+  <text x="266" y="719" class="t s" font-weight="700">Key phrases</text>
+  <text x="266" y="734" class="sub s">no training needed</text>
+  <text x="385" y="727" class="sub" font-size="16">&#8594;</text>
+
+  <circle cx="427" cy="722" r="11" fill="#5a6379"/><text x="427" y="726" class="s" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+  <text x="445" y="719" class="t s" font-weight="700">Keyword rules</text>
+  <text x="445" y="734" class="sub s">offline, zero cost, never fails</text>
+
+  <!-- Docker -->
+  <rect x="741" y="644" width="419" height="118" rx="10" fill="#ffffff" stroke="#b9c2d4" stroke-dasharray="6 4"/>
+  <text x="761" y="670" class="t hh">Local only &#183; Dockerfile</text>
+  <text x="761" y="691" class="sub b">Builds the API as a container on your own machine to</text>
+  <text x="761" y="708" class="sub b">demonstrate container fundamentals.</text>
+  <text x="761" y="732" class="s" fill="#b3261e" font-weight="700">Never pushed to Azure. Container hosting is not free-tier</text>
+  <text x="761" y="748" class="s" fill="#b3261e" font-weight="700">safe for this project.</text>
+</svg>

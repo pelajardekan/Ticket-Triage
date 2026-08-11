@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit a ticket &middot; TicketTriage</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">Ticket<span>Triage</span></div>
+    <nav class="site">
+      <a href="/index.html" class="active">Submit a ticket</a>
+      <a href="/admin.html">Admin review</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <h1>Submit a support request</h1>
+    <p class="lede">
+      Tell us what you need help with. The system suggests a category automatically,
+      so you can leave the category blank unless you already know where it belongs.
+    </p>
+
+    <div id="banner"></div>
+
+    <div class="card">
+      <form id="ticket-form" novalidate>
+        <div class="grid-2">
+          <div class="field" data-field="name">
+            <label for="name">Full name</label>
+            <input id="name" name="name" autocomplete="name" maxlength="100" required>
+            <div class="err"></div>
+          </div>
+          <div class="field" data-field="email">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="200" required>
+            <div class="err"></div>
+          </div>
+        </div>
+
+        <div class="field" data-field="title">
+          <label for="title">Short title</label>
+          <input id="title" name="title" maxlength="150" placeholder="Cannot access campus Wi-Fi" required>
+          <div class="err"></div>
+        </div>
+
+        <div class="field" data-field="description">
+          <label for="description">Description <span class="hint">- the more detail, the better the category suggestion</span></label>
+          <textarea id="description" name="description" maxlength="4000" required
+            placeholder="I cannot connect to the campus Wi-Fi from my laptop."></textarea>
+          <div class="err"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field" data-field="priority">
+            <label for="priority">Priority <span class="hint">- optional</span></label>
+            <select id="priority" name="priority">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+            </select>
+            <div class="err"></div>
+          </div>
+          <div class="field" data-field="category">
+            <label for="category">Category <span class="hint">- optional, leave blank to auto-detect</span></label>
+            <select id="category" name="category">
+              <option value="">Suggest one for me</option>
+            </select>
+            <div class="err"></div>
+          </div>
+        </div>
+
+        <button id="submit-btn" type="submit">Submit ticket</button>
+        <button id="reset-btn" type="button" class="ghost">Clear</button>
+      </form>
+    </div>
+
+    <div id="result"></div>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">AI-200 Capstone &middot; TicketTriage &middot; Azure free-tier reference build</div>
+</footer>
+
+<script type="module" src="/js/submit.js"></script>
+</body>
+</html>

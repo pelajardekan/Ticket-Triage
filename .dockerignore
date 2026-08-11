@@ -1,0 +1,10 @@
+**/__pycache__/
+**/*.pyc
+.git/
+.github/
+docs/
+tests/
+frontend/
+api/local.settings.json
+.venv/
+.env

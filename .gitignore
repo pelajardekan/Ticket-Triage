@@ -1,0 +1,24 @@
+# Secrets - never commit these
+api/local.settings.json
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+
+# Azure Functions / SWA tooling
+bin/
+obj/
+.azure/
+.swa/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

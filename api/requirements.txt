@@ -1,0 +1,8 @@
+# Azure Functions Python worker. Always required.
+azure-functions>=1.18.0
+
+# Cosmos DB for NoSQL data plane SDK.
+azure-cosmos>=4.5.1
+
+# Used for the Azure AI Language REST calls.
+requests>=2.31.0
