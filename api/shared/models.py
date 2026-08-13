@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import re
 import uuid
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Tuple
+from datetime import datetime, timezone, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
 from .categories import CATEGORIES, GENERAL
 
@@ -21,12 +21,20 @@ MAX_EMAIL = 200
 MAX_TITLE = 150
 MAX_DESCRIPTION = 4000
 
+# Global tracker to guarantee distinct timestamps during rapid loop inserts on Windows
+_last_dt: Optional[datetime] = None
+
 
 # Microsecond resolution matters. At second resolution a seeding script that
 # posts eighteen tickets in a second gives them all the same createdAt, and
 # "newest first" silently stops meaning anything.
 def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
+    global _last_dt
+    now = datetime.now(timezone.utc)
+    if _last_dt is not None and now <= _last_dt:
+        now = _last_dt + timedelta(microseconds=1)
+    _last_dt = now
+    return now.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 class ValidationError(ValueError):
