@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>View Tickets</title>
+    <link rel="stylesheet" href="../css/global.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+  <body data-role="user">
+    <div class="app-shell">
+      <div id="sidebar-container"></div>
+      <main class="main-area">
+        <div id="topbar-container" data-role="student"></div>
+        <section class="content">
+          <h1 class="page-title">View Tickets</h1>
+          <div class="filters">
+            <select id="filterCategory" class="form-control">
+              <option value="All">All Categories</option>
+              <option>IT Support</option>
+              <option>Course registration</option>
+              <option>Library Services</option></select
+            ><select id="filterPriority" class="form-control">
+              <option value="All">All Priorities</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option></select
+            ><select id="filterStatus" class="form-control">
+              <option value="All">All Statuses</option>
+              <option>Categorised</option>
+              <option>In Progress</option>
+              <option>Resolved</option></select
+            ><button class="btn-outline" id="clearFilters">
+              Clear Filters
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Submitted On</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody data-ticket-body></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <div data-ticket-count>Showing 1 to 3 of 3 tickets</div>
+            <div class="pagination">
+              <button>&lt;</button><button class="current">1</button
+              ><button>&gt;</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="../js/app.js"></script>
+  </body>
+</html>
