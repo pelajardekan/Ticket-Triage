@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import re
 import uuid
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Tuple
+from datetime import datetime, timezone, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
 from .categories import CATEGORIES, GENERAL
 
@@ -19,14 +19,22 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$")
 MAX_NAME = 100
 MAX_EMAIL = 200
 MAX_TITLE = 150
-MAX_DESCRIPTION = 4000
+MAX_DESCRIPTION = 1000
+
+# Global tracker to guarantee distinct timestamps during rapid loop inserts on Windows
+_last_dt: Optional[datetime] = None
 
 
 # Microsecond resolution matters. At second resolution a seeding script that
 # posts eighteen tickets in a second gives them all the same createdAt, and
 # "newest first" silently stops meaning anything.
 def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
+    global _last_dt
+    now = datetime.now(timezone.utc)
+    if _last_dt is not None and now <= _last_dt:
+        now = _last_dt + timedelta(microseconds=1)
+    _last_dt = now
+    return now.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 class ValidationError(ValueError):
@@ -114,7 +122,7 @@ def build_ticket(cleaned: Dict[str, Any], classification: Dict[str, Any]) -> Dic
     initial_status = "Categorised" if (user_supplied or scored) else "New"
 
     return {
-        "id": str(uuid.uuid4()),
+        "id": generate_ticket_id(),
         "name": cleaned["name"],
         "email": cleaned["email"],
         "title": cleaned["title"],
@@ -132,6 +140,11 @@ def build_ticket(cleaned: Dict[str, Any], classification: Dict[str, Any]) -> Dic
         "statusHistory": [{"status": initial_status, "at": now, "by": "system"}],
     }
 
+def generate_ticket_id() -> str:
+    date_part = datetime.now(timezone.utc).strftime("%Y%m%d")
+    random_part = uuid.uuid4().hex[:6].upper()
+
+    return f"TKT-{date_part}-{random_part}"
 
 def validate_status_update(payload: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, str]]:
     errors: Dict[str, str] = {}
