@@ -1,102 +1,120 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Submit a Ticket</title>
-    <link rel="stylesheet" href="../css/global.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
-  </head>
-  <body>
-    <div class="app-shell">
-      <div id="sidebar-container"></div>
-      <main class="main-area">
-        <div id="topbar-container" data-role="student"></div>
-        <section class="content">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Submit a Ticket</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container"></div>
+    <main class="main-area">
+      <div id="topbar-container" data-role="student"></div>
+      <section class="content">
+        <div id="submit-view">
           <h1 class="page-title">Submit a Ticket</h1>
           <div class="subtitle">
             Please provide as much detail as possible so we can help you better.
           </div>
-          <form id="ticketForm">
+
+          <div id="banner" aria-live="polite"></div>
+
+          <form id="ticket-form" novalidate>
             <div class="grid-2">
               <div>
-                <div class="form-group">
-                  <label>Name <span style="color: red">*</span></label
-                  ><input
-                    class="form-control"
-                    placeholder="Enter your name"
-                    required
-                  />
+                <div class="form-group" data-field="name">
+                <label for="name">Name <span style="color: red">*</span></label>
+                  <input class="form-control" id="name" name="name" autocomplete="name" maxlength="100"
+                    placeholder="Enter your name" required />
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
-                <div class="form-group">
-                  <label>Email Address <span style="color: red">*</span></label
-                  ><input
-                    class="form-control"
-                    type="email"
-                    placeholder="Enter your email address"
-                    required
-                  />
+
+                <div class="form-group" data-field="email">
+                <label for="email">Email Address <span style="color: red">*</span></label>
+                  <input class="form-control" id="email" name="email" type="email" autocomplete="email" maxlength="200"
+                    placeholder="Enter your email address" required />
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
-                <div class="form-group">
-                  <label>Title <span style="color: red">*</span></label
-                  ><input
-                    class="form-control"
-                    placeholder="Brief summary of your issue"
-                    required
-                  />
+
+                <div class="form-group" data-field="title">
+                <label for="title">Title <span style="color: red">*</span></label>
+                  <input class="form-control" id="title" name="title" maxlength="150"
+                    placeholder="Brief summary of your issue" required />
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
-                <div class="form-group">
-                  <label>Description <span style="color: red">*</span></label
-                  ><textarea
-                    class="form-control"
-                    id="description"
-                    maxlength="200"
-                    placeholder="Please describe your issue in detail"
-                    required
-                  ></textarea>
-                  <div id="counter" style="color: #666; margin-top: 6px">
-                    0/200 characters
-                  </div>
+
+                <div class="form-group" data-field="description">
+                <label for="description">Description <span style="color: red">*</span></label>
+                  <textarea class="form-control" id="description" name="description" minlength="10" maxlength="1000"
+                    placeholder="Please describe your issue in detail" required></textarea>
+                <div id="counter" class="character-counter">0/1000 characters</div>
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
               </div>
+
               <div>
-                <div class="form-group">
-                  <label>Priority (Optional)</label
-                  ><select class="form-control">
-                    <option>Select priority</option>
-                    <option>Low</option>
-                    <option>Medium</option>
-                    <option>High</option>
+                <div class="form-group" data-field="priority">
+                  <label for="priority">Priority (Optional)</label>
+                  <select class="form-control" id="priority" name="priority">
+                    <option value="">Select priority</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
                   </select>
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
-                <div class="form-group">
-                  <label>Category (Optional, leave blank to auto-detect)</label
-                  ><select class="form-control">
-                    <option>Select category</option>
-                    <option>IT Support</option>
-                    <option>Course registration</option>
-                    <option>Library Services</option>
+
+                <div class="form-group" data-field="category">
+                <label for="category">Category (Optional, leave blank to auto-detect)</label>
+                  <select class="form-control" id="category" name="category">
+                    <option value="">Select category</option>
                   </select>
+                  <div class="field-error" aria-live="polite"></div>
                 </div>
+
                 <div class="info-box">
-                  <div class="info-icon">ⓘ</div>
+                  <div class="info-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                  </div>
                   <div>
                     Our system will automatically suggest the most relevant
-                    category based on description
+                    category based on your title and description.
                   </div>
                 </div>
               </div>
             </div>
+
             <div class="form-actions">
-              <button class="btn-primary" type="submit">Submit</button>
+              <button class="btn-secondary" id="clear-btn" type="reset">Clear</button>
+              <button class="btn-primary" id="submit-btn" type="submit">Submit</button>
             </div>
           </form>
-        </section>
-      </main>
-    </div>
-    <script src="../js/app.js"></script>
-  </body>
+        </div>
+        <div id="success-view" hidden>
+          <div class="success-card">
+            <div class="success-title">
+              Your ticket has been submitted!
+            </div>
+
+            <div class="details-grid" id="submitted-ticket-details"></div>
+
+            <div class="center">
+              <button class="btn-primary" id="submit-another-btn" type="button">
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/app.js"></script>
+  <script type="module" src="../js/submit.js"></script>
+</body>
+
 </html>

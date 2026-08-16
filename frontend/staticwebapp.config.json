@@ -3,7 +3,17 @@
     "apiRuntime": "python:3.11"
   },
   "routes": [
-    { "route": "/admin", "rewrite": "/admin.html" },
+    { "route": "/", "rewrite": "/index.html" },
+    { "route": "/signin", "rewrite": "/signin.html" },
+    { "route": "/signup", "rewrite": "/signup.html" },
+    { "route": "/submit", "rewrite": "/user/submit-ticket.html" },
+    { "route": "/lists", "rewrite": "/user/ticket-lists.html" },
+    { "route": "/details", "rewrite": "/user/ticket-details.html" },
+    { "route": "/settings", "rewrite": "/user/settings.html" },
+    { "route": "/admin", "rewrite": "/admin/dashboard.html" },
+    { "route": "/admin/lists", "rewrite": "/admin/ticket-lists.html" },
+    { "route": "/admin/details", "rewrite": "/admin/ticket-details.html" },
+    { "route": "/admin/settings", "rewrite": "/admin/settings.html" },
     { "route": "/api/*", "allowedRoles": ["anonymous"] }
   ],
   "navigationFallback": {
