@@ -97,10 +97,14 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path in ("/", ""):
             path = "/user/submit-ticket.html"
-        if path in ("/signin", "/signup", "/signout", "/lists", "/details", "/settings"):
+        if path in ("/signin", "/signup", "/signout", "/settings"):
             path = "/user/submit-ticket.html"
         if path == "/submit":
             path = "/user/submit-ticket.html"
+        if path == "/lists":
+            path = "/user/ticket-lists.html"
+        if path == "/details":
+            path = "/user/ticket-details.html"
         if path == "/admin/login":
             path = "/admin/login.html"
         if path == "/admin":

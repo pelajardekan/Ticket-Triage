@@ -9,7 +9,7 @@ import azure.functions as func
 
 from shared.classifier import classify
 from shared.config import get_settings
-from shared.http import error_response, json_response, read_json, require_admin
+from shared.http import error_response, json_response, read_json
 from shared.models import build_ticket, validate_new_ticket
 from shared.repository import get_repository
 
@@ -21,10 +21,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     repo = get_repository(settings)
 
     if req.method == "GET":
-        denied = require_admin(req, settings)
-        if denied is not None:
-            return denied
-
         try:
             limit = int(req.params.get("limit") or settings.max_page_size)
         except ValueError:
