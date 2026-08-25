@@ -236,6 +236,27 @@ def test_patch_requires_the_admin_key_when_one_is_configured(monkeypatch):
     get_settings(refresh=True)
 
 
+def test_ticket_list_requires_the_admin_key_when_one_is_configured(monkeypatch):
+    import tickets
+
+    create()
+    monkeypatch.setenv("ADMIN_API_KEY", "s3cret")
+    get_settings(refresh=True)
+
+    denied = tickets.main(request("GET", "/api/tickets"))
+    assert denied.status_code == 401
+
+    allowed = tickets.main(request(
+        "GET",
+        "/api/tickets",
+        headers={"x-admin-key": "s3cret"},
+    ))
+    assert allowed.status_code == 200
+    assert body_of(allowed)["count"] == 1
+
+    get_settings(refresh=True)
+
+
 def test_reading_a_ticket_never_requires_the_admin_key(monkeypatch):
     import ticket_item
     created = body_of(create())
