@@ -16,7 +16,15 @@
     <main class="main-area">
       <div id="topbar-container" data-role="admin"></div>
       <section class="content">
-        <h1 class="page-title">Tickets</h1>
+        <h1 class="page-title">Admin Review</h1>
+        <div class="subtitle">Review categorised tickets and move them through the support workflow.</div>
+        <div class="filters" style="margin-top: 24px;">
+          <input id="admin-key" class="form-control" type="password"
+            placeholder="Admin key (required when admin protection is enabled)" autocomplete="off" />
+          <button class="btn-primary" id="save-admin-key" type="button">Use Admin Key</button>
+          <button class="btn-outline" id="refresh-tickets" type="button">Refresh</button>
+        </div>
+        <div id="admin-key-message" aria-live="polite"></div>
         <div class="filters">
           <select id="filterCategory" class="form-control">
             <option value="All">All Categories</option>

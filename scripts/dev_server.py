@@ -97,26 +97,18 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path in ("/", ""):
             path = "/user/submit-ticket.html"
-        if path == "/signin":
-            path = "/signin.html"
-        if path == "/signout":
-            path = "/signout.html"
+        if path in ("/signin", "/signup", "/signout", "/lists", "/details", "/settings"):
+            path = "/user/submit-ticket.html"
         if path == "/submit":
             path = "/user/submit-ticket.html"
-        if path == "/lists":
-            path = "/user/ticket-lists.html"
-        if path == "/details":
-            path = "/user/ticket-details.html"
-        if path == "/settings":
-            path = "/user/settings.html"
         if path == "/admin":
-            path = "/admin/dashboard.html"
+            path = "/admin/ticket-lists.html"
         if path == "/admin/lists":
             path = "/admin/ticket-lists.html"
         if path == "/admin/details":
             path = "/admin/ticket-details.html"
         if path == "/admin/settings":
-            path = "/admin/settings.html"
+            path = "/admin/ticket-lists.html"
         target = (FRONTEND / path.lstrip("/")).resolve()
         if not str(target).startswith(str(FRONTEND.resolve())) or not target.is_file():
             target = FRONTEND / "index.html"

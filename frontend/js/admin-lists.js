@@ -1,4 +1,4 @@
-import { api, esc, formatDate, statusClass } from "./api.js";
+import { api, esc, formatDate, getAdminKey, setAdminKey, statusClass } from "./api.js";
 
 const ticketBody = document.querySelector("[data-ticket-body]");
 
@@ -17,6 +17,11 @@ const previousPage = document.getElementById("previousPage");
 const nextPage = document.getElementById("nextPage");
 
 const pageNumbers = document.getElementById("pageNumbers");
+
+const adminKeyInput = document.getElementById("admin-key");
+const saveAdminKey = document.getElementById("save-admin-key");
+const refreshTickets = document.getElementById("refresh-tickets");
+const adminKeyMessage = document.getElementById("admin-key-message");
 
 let tickets = [];
 let filteredTickets = [];
@@ -300,9 +305,28 @@ async function loadTickets() {
       </tr>
     `;
 
-    ticketCount.textContent = error.message || "Could not load tickets.";
+    const message = (error.status === 401 || error.status === 403)
+      ? "Admin access was denied. Enter the ADMIN_API_KEY above and try again."
+      : (error.message || "Could not load tickets.");
+
+    ticketCount.textContent = message;
   }
 }
+
+async function applyAdminKey() {
+  setAdminKey(adminKeyInput?.value || "");
+  if (adminKeyMessage) {
+    adminKeyMessage.innerHTML = `<div class="form-notice success">Admin key applied for this browser tab.</div>`;
+  }
+  await loadTickets();
+}
+
+if (adminKeyInput) adminKeyInput.value = getAdminKey();
+saveAdminKey?.addEventListener("click", applyAdminKey);
+refreshTickets?.addEventListener("click", loadTickets);
+adminKeyInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") applyAdminKey();
+});
 
 filterCategory?.addEventListener("change", applyFilters);
 
