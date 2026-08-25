@@ -69,7 +69,7 @@ function setupSidebar() {
 
   document.getElementById("adminLogout")?.addEventListener("click", () => {
     try { sessionStorage.removeItem("ticketTriageAdminKey"); } catch {}
-    window.location.assign("/admin/login");
+    window.location.assign("/submit");
   });
 
   setActiveSidebarLink();
