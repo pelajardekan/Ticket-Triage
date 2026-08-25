@@ -39,9 +39,10 @@ async function loadTopbar() {
   const role = container.dataset.role || "student";
   const roleTag = document.getElementById("topbarRole");
 
-  if (roleTag) {
+  if (roleTag && role === "admin") {
     roleTag.textContent = role.toUpperCase();
     roleTag.classList.add(role);
+    roleTag.hidden = false;
   }
 }
 
@@ -64,6 +65,11 @@ function setupSidebar() {
     const collapsed = sidebar.classList.contains("collapsed");
 
     localStorage.setItem("sidebarCollapsed", collapsed);
+  });
+
+  document.getElementById("adminLogout")?.addEventListener("click", () => {
+    try { sessionStorage.removeItem("ticketTriageAdminKey"); } catch {}
+    window.location.assign("/admin/login");
   });
 
   setActiveSidebarLink();

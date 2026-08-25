@@ -808,3 +808,17 @@ th {
   opacity: 0.65;
   cursor: not-allowed;
 }
+
+.sidebar button.side-link {
+  width: 100%;
+  color: inherit;
+  background: none;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  text-align: left;
+}
+
+body.admin-protected {
+  visibility: hidden;
+}

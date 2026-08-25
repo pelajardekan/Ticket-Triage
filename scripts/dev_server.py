@@ -101,6 +101,8 @@ class Handler(BaseHTTPRequestHandler):
             path = "/user/submit-ticket.html"
         if path == "/submit":
             path = "/user/submit-ticket.html"
+        if path == "/admin/login":
+            path = "/admin/login.html"
         if path == "/admin":
             path = "/admin/ticket-lists.html"
         if path == "/admin/lists":

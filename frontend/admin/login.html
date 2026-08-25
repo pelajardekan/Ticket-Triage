@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Login · TicketTriage</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  </head>
+  <body>
+    <div class="public-shell">
+      <header class="public-nav">
+        <a class="brand" href="/submit">
+          <span class="brand-ticket">Ticket</span><span class="brand-triage">Triage.</span>
+        </a>
+        <nav class="public-nav-links">
+          <a class="nav-link" href="/submit">SUBMIT TICKET</a>
+        </nav>
+      </header>
+      <main class="public-main">
+        <form class="auth-card" id="admin-login-form">
+          <h1>Admin Login</h1>
+          <p class="subtitle">Enter the administrator key to review and update tickets.</p>
+          <div id="admin-login-message" aria-live="polite"></div>
+          <div class="form-group">
+            <label for="admin-key">Admin key</label>
+            <input class="form-control" id="admin-key" type="password"
+              autocomplete="current-password" required autofocus />
+          </div>
+          <button class="btn-primary" id="admin-login-button" style="width:100%" type="submit">
+            Log in as Admin
+          </button>
+        </form>
+      </main>
+      <footer class="public-footer">© 2026 TicketTriage. All Rights Reserved</footer>
+    </div>
+    <script type="module" src="../js/admin-login.js"></script>
+  </body>
+</html>
