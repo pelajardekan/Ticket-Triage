@@ -3,7 +3,7 @@
     "apiRuntime": "python:3.11"
   },
   "routes": [
-    { "route": "/", "rewrite": "/index.html" },
+    { "route": "/", "redirect": "/submit", "statusCode": 302 },
     { "route": "/signin", "rewrite": "/signin.html" },
     { "route": "/signup", "rewrite": "/signup.html" },
     { "route": "/submit", "rewrite": "/user/submit-ticket.html" },

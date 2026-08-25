@@ -96,7 +96,7 @@ class Handler(BaseHTTPRequestHandler):
     def _serve_static(self):
         path = urlparse(self.path).path
         if path in ("/", ""):
-            path = "/index.html"
+            path = "/user/submit-ticket.html"
         if path == "/signin":
             path = "/signin.html"
         if path == "/signout":
