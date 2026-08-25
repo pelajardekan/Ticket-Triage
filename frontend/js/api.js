@@ -2,9 +2,16 @@
 
 const API_BASE = "/api";
 
-/** Remembered only for the current tab, never written to storage. */
+/** Remembered only for the current browser tab so admin detail pages can reuse it. */
 let adminKey = "";
-export function setAdminKey(value) { adminKey = (value || "").trim(); }
+try { adminKey = sessionStorage.getItem("ticketTriageAdminKey") || ""; } catch {}
+export function setAdminKey(value) {
+  adminKey = (value || "").trim();
+  try {
+    if (adminKey) sessionStorage.setItem("ticketTriageAdminKey", adminKey);
+    else sessionStorage.removeItem("ticketTriageAdminKey");
+  } catch {}
+}
 export function getAdminKey() { return adminKey; }
 
 async function request(path, options = {}) {
