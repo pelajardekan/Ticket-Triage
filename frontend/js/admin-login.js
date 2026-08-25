@@ -7,7 +7,7 @@ const message = document.getElementById("admin-login-message");
 
 async function verifyAdminKey(key) {
   setAdminKey(key);
-  await api.listTickets({ limit: 1 });
+  await api.verifyAdmin();
 }
 
 form?.addEventListener("submit", async (event) => {

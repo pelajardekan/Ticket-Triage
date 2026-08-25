@@ -7,7 +7,7 @@ async function requireAdminAccess() {
   }
 
   try {
-    await api.listTickets({ limit: 1 });
+    await api.verifyAdmin();
     document.body.classList.remove("admin-protected");
   } catch {
     setAdminKey("");
