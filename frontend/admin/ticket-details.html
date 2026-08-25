@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Ticket Details</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container" data-sidebar="admin"></div>
+    <main class="main-area">
+      <div id="topbar-container" data-role="admin"></div>
+      <section class="content">
+        <a class="back-link" href="/admin/lists">
+          <i class="fa-solid fa-chevron-left"></i>
+          Back
+        </a>
+        <div class="ticket-card" id="ticket-card">
+          <div class="ticket-card-header">
+            <div>
+              <span class="ticket-id" id="ticket-id">
+                Loading...
+              </span>
+              <span class="badge" id="ticket-status"></span>
+            </div>
+            <div id="submitted-on"></div>
+          </div>
+          <div class="admin-ticket-layout">
+            <div class="admin-ticket-main">
+              <div class="ticket-body">
+                <div class="label">
+                  Name
+                </div>
+                <div id="ticket-name">
+                  —
+                </div>
+                <div class="label">
+                  Email Address
+                </div>
+                <div id="ticket-email">
+                  —
+                </div>
+                <div class="label">
+                  Title
+                </div>
+                <div id="ticket-title">
+                  —
+                </div>
+                <div class="label">
+                  Category (Suggested)
+                </div>
+                <div id="ticket-category" style="
+                    color:#315db7;
+                    font-weight:700;
+                  ">
+                  —
+                </div>
+                <div class="label">
+                  Priority
+                </div>
+                <div>
+                  <span class="badge" id="ticket-priority">
+                    —
+                  </span>
+                </div>
+                <div class="label">
+                  Description
+                </div>
+                <div id="ticket-description">
+                  —
+                </div>
+              </div>
+            </div>
+            <div class="admin-ticket-side">
+              <h2>
+                Update Status
+              </h2>
+              <p>
+                Current Status
+              </p>
+              <span class="badge" id="current-status">
+                —
+              </span>
+              <p style="margin-top:26px;">
+                New Status
+              </p>
+              <select class="form-control" id="new-status">
+              </select>
+              <button class="btn-primary" id="update-status-btn" type="button" style="
+                  width:100%;
+                  margin-top:28px;
+                ">
+                Update
+              </button>
+              <div id="update-message" style="margin-top:16px;"></div>
+            </div>
+          </div>
+        </div>
+        <div id="ticket-error" style="display:none;"></div>
+      </section>
+    </main>
+  </div>
+  <script src="../js/app.js"></script>
+  <script type="module" src="../js/admin-details.js"></script>
+</body>
+
+</html>

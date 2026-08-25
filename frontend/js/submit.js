@@ -1,118 +1,212 @@
-import { api, esc, formatDate } from "./api.js";
+import { api, esc, formatDate, statusClass } from "./api.js";
 
 const form = document.getElementById("ticket-form");
 const submitBtn = document.getElementById("submit-btn");
-const resetBtn = document.getElementById("reset-btn");
 const banner = document.getElementById("banner");
-const result = document.getElementById("result");
+const description = document.getElementById("description");
+const counter = document.getElementById("counter");
+
+const submitView = document.getElementById("submit-view");
+const successView = document.getElementById("success-view");
+const submittedTicketDetails = document.getElementById(
+  "submitted-ticket-details"
+);
+const submitAnotherBtn = document.getElementById("submit-another-btn");
+
 
 function clearFieldErrors() {
-  document.querySelectorAll(".field").forEach((f) => {
-    f.classList.remove("invalid");
-    const err = f.querySelector(".err");
-    if (err) err.textContent = "";
+  document.querySelectorAll(".form-group[data-field]").forEach((group) => {
+    group.classList.remove("invalid");
+    const error = group.querySelector(".field-error");
+    if (error) error.textContent = "";
   });
 }
 
-function showFieldErrors(fields) {
-  Object.entries(fields || {}).forEach(([name, message]) => {
-    const wrapper = document.querySelector(`.field[data-field="${name}"]`);
-    if (!wrapper) return;
-    wrapper.classList.add("invalid");
-    const err = wrapper.querySelector(".err");
-    if (err) err.textContent = message;
+function showFieldErrors(fields = {}) {
+  Object.entries(fields).forEach(([name, message]) => {
+    const group = document.querySelector(`.form-group[data-field="${name}"]`);
+    if (!group) return;
+
+    group.classList.add("invalid");
+    const error = group.querySelector(".field-error");
+    if (error) error.textContent = message;
   });
 }
 
 function setBanner(kind, message) {
-  banner.innerHTML = message ? `<div class="notice ${kind}">${esc(message)}</div>` : "";
+  if (!banner) return;
+  banner.innerHTML = message
+    ? `<div class="form-notice ${kind}" role="alert">${esc(message)}</div>`
+    : "";
 }
 
-/** Populate the category menu from the API so the list lives in one place. */
+function updateCounter() {
+  if (!description || !counter) return;
+  counter.textContent = `${description.value.length}/${description.maxLength} characters`;
+}
+
+
+function priorityClass(priority) {
+  return String(priority || "")
+    .trim()
+    .toLowerCase() || "medium";
+}
+
+
+function showSubmittedTicket(ticket) {
+  const id =
+    ticket.id ??
+    ticket.ticketId ??
+    "—";
+
+  if (id !== "—") {
+    const url = new URL(window.location.href);
+    url.searchParams.set("id", id);
+
+    window.history.pushState({}, "", url);
+  }
+
+  const category =
+    ticket.category ??
+    ticket.suggestedCategory ??
+    "—";
+
+  const priority =
+    ticket.priority ??
+    "—";
+
+  const status =
+    ticket.status ??
+    "New";
+
+  const submittedAt =
+    ticket.createdAt ??
+    ticket.submittedAt ??
+    ticket.created_at ??
+    "";
+
+  submittedTicketDetails.innerHTML = `
+    <strong>Ticket ID</strong>
+    <span>${esc(id)}</span>
+
+    <strong>Category</strong>
+    <span style="color: #315db7; font-weight: 700">
+      ${esc(category)}
+    </span>
+
+    <strong>Priority</strong>
+    <span>
+      <span class="badge ${esc(priorityClass(priority))}">
+        ${esc(priority)}
+      </span>
+    </span>
+
+    <strong>Status</strong>
+    <span>
+      <span class="badge ${esc(statusClass(status))}">
+        ${esc(status)}
+      </span>
+    </span>
+
+    <strong>Submitted On</strong>
+    <span>
+      ${esc(formatDate(submittedAt) || "Just now")}
+    </span>
+  `;
+
+  submitView.hidden = true;
+  successView.hidden = false;
+}
+
+
 async function loadCategories() {
+  const select = document.getElementById("category");
+  if (!select) return;
+
   try {
     const data = await api.categories();
-    const select = document.getElementById("category");
-    data.categories.forEach((c) => {
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      select.appendChild(opt);
+    const categories = Array.isArray(data?.categories) ? data.categories : [];
+
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      select.appendChild(option);
     });
-  } catch {
-    setBanner("warn", "Could not load the category list. You can still submit a ticket.");
+  } catch (error) {
+    setBanner(
+      "warning",
+      "Could not load the category list. You can still submit and let the system auto-detect it.",
+    );
   }
 }
 
-function methodLabel(method) {
-  return ({
-    "azure-ai-language-custom": "Azure AI Language, custom trained model",
-    "azure-ai-language-keyphrase": "Azure AI Language, key phrase extraction",
-    "keyword-rules": "Keyword rules (offline fallback)",
-  })[method] || method;
-}
+form?.addEventListener("reset", () => {
+  setTimeout(() => {
+    clearFieldErrors();
+    setBanner("", "");
+    updateCounter();
+  }, 0);
+});
 
-function renderResult(ticket) {
-  const auto = ticket.categorySource === "auto";
-  const evidence = (ticket.classificationEvidence || []).map(esc).join(", ");
-  result.innerHTML = `
-    <div class="card result">
-      <h2 style="margin:0 0 4px;font-size:1.1rem;">Ticket submitted</h2>
-      <p class="muted" style="margin:0;">Keep this reference number for follow-up.</p>
-      <dl>
-        <dt>Reference</dt><dd class="mono">${esc(ticket.id)}</dd>
-        <dt>Title</dt><dd>${esc(ticket.title)}</dd>
-        <dt>Category</dt>
-        <dd>
-          <span class="pill cat">${esc(ticket.category)}</span>
-          ${auto ? '<span class="muted"> suggested automatically</span>' : '<span class="muted"> chosen by you</span>'}
-        </dd>
-        <dt>Status</dt><dd><span class="pill new">${esc(ticket.status)}</span></dd>
-        <dt>Priority</dt><dd>${esc(ticket.priority)}</dd>
-        <dt>Submitted</dt><dd>${esc(formatDate(ticket.createdAt))}</dd>
-        <dt>Classified by</dt>
-        <dd>${esc(methodLabel(ticket.classificationMethod))}
-            <span class="muted">(confidence ${esc(ticket.classificationConfidence)})</span></dd>
-        ${evidence ? `<dt>Signals</dt><dd class="muted">${evidence}</dd>` : ""}
-      </dl>
-    </div>`;
-  result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-form.addEventListener("submit", async (event) => {
+form?.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearFieldErrors();
   setBanner("", "");
 
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
   const payload = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    title: document.getElementById("title").value,
-    description: document.getElementById("description").value,
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    title: document.getElementById("title").value.trim(),
+    description: description.value.trim(),
     priority: document.getElementById("priority").value,
     category: document.getElementById("category").value,
   };
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
+
   try {
     const ticket = await api.createTicket(payload);
-    renderResult(ticket);
-    form.reset();
+
+    showSubmittedTicket(ticket);
   } catch (error) {
     showFieldErrors(error.fields);
-    setBanner("bad", error.message);
+    setBanner("error", error.message || "Could not submit the ticket.");
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = "Submit ticket";
+    submitBtn.textContent = "Submit";
   }
 });
 
-resetBtn.addEventListener("click", () => {
+
+submitAnotherBtn?.addEventListener("click", () => {
   form.reset();
+
   clearFieldErrors();
   setBanner("", "");
-  result.innerHTML = "";
+
+  updateCounter();
+
+  successView.hidden = true;
+  submitView.hidden = false;
+
+  const url = new URL(window.location.href);
+  url.searchParams.delete("id");
+  window.history.pushState({}, "", url);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 });
 
+
+description?.addEventListener("input", updateCounter);
+updateCounter();
 loadCategories();
