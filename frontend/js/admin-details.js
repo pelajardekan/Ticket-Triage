@@ -18,6 +18,14 @@ const ticketTitle = document.getElementById("ticket-title");
 
 const ticketCategory = document.getElementById("ticket-category");
 
+const ticketCategorySource = document.getElementById("ticket-category-source");
+
+const ticketClassificationMethod = document.getElementById("ticket-classification-method");
+
+const ticketClassificationConfidence = document.getElementById("ticket-classification-confidence");
+
+const ticketClassificationSignals = document.getElementById("ticket-classification-signals");
+
 const ticketPriority = document.getElementById("ticket-priority");
 
 const ticketDescription = document.getElementById("ticket-description");
@@ -48,6 +56,14 @@ function getCategory(ticket) {
 
 function getSubmittedDate(ticket) {
   return ticket.createdAt ?? ticket.submittedAt ?? ticket.created_at ?? "";
+}
+
+function classificationMethodLabel(method) {
+  return ({
+    "azure-ai-language-custom": "Azure AI Language custom model",
+    "azure-ai-language-keyphrase": "Azure AI Language key phrase extraction",
+    "keyword-rules": "Keyword rules fallback",
+  })[method] || method || "Not reported";
 }
 
 async function loadStatuses() {
@@ -102,6 +118,26 @@ function displayTicket(ticket) {
   ticketTitle.textContent = ticket.title ?? "—";
 
   ticketCategory.textContent = category;
+
+  ticketCategorySource.textContent = ({
+    auto: "Suggested automatically",
+    user: "Selected by requester",
+    admin: "Updated by admin",
+  })[ticket.categorySource] || "Not reported";
+
+  ticketClassificationMethod.textContent = classificationMethodLabel(
+    ticket.classificationMethod
+  );
+
+  const confidence = Number(ticket.classificationConfidence);
+  ticketClassificationConfidence.textContent = Number.isFinite(confidence)
+    ? `${Math.round(confidence * 100)}%`
+    : "Not reported";
+
+  ticketClassificationSignals.textContent = Array.isArray(ticket.classificationEvidence)
+    && ticket.classificationEvidence.length
+    ? ticket.classificationEvidence.join(", ")
+    : "No signals reported";
 
   ticketPriority.textContent = priority;
 

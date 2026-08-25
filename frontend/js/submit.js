@@ -52,15 +52,6 @@ function priorityClass(priority) {
     .toLowerCase() || "medium";
 }
 
-function classificationMethodLabel(method) {
-  return ({
-    "azure-ai-language-custom": "Azure AI Language custom model",
-    "azure-ai-language-keyphrase": "Azure AI Language key phrase extraction",
-    "keyword-rules": "Keyword rules fallback",
-  })[method] || method || "Not reported";
-}
-
-
 function showSubmittedTicket(ticket) {
   const id =
     ticket.id ??
@@ -93,16 +84,6 @@ function showSubmittedTicket(ticket) {
     ticket.created_at ??
     "";
 
-  const classificationMethod = classificationMethodLabel(
-    ticket.classificationMethod
-  );
-  const confidenceValue = Number(ticket.classificationConfidence);
-  const confidence = Number.isFinite(confidenceValue)
-    ? `${Math.round(confidenceValue * 100)}%`
-    : "Not reported";
-  const evidence = Array.isArray(ticket.classificationEvidence)
-    ? ticket.classificationEvidence.join(", ")
-    : "";
   const categoryNote = ticket.categorySource === "auto"
     ? "Suggested automatically"
     : "Selected by requester";
@@ -135,16 +116,6 @@ function showSubmittedTicket(ticket) {
       ${esc(formatDate(submittedAt) || "Just now")}
     </span>
 
-    <strong>Classified By</strong>
-    <span>${esc(classificationMethod)}</span>
-
-    <strong>Confidence</strong>
-    <span>${esc(confidence)}</span>
-
-    ${evidence ? `
-      <strong>Classification Signals</strong>
-      <span>${esc(evidence)}</span>
-    ` : ""}
   `;
 
   submitView.hidden = true;
