@@ -1,4 +1,4 @@
-"""GET /api/admin/verify - validate access to the admin interface."""
+"""GET /api/admin-verify - validate access to the admin interface."""
 
 import azure.functions as func
 

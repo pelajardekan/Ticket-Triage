@@ -7,7 +7,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "admin/verify"
+      "route": "admin-verify"
     },
     { "type": "http", "direction": "out", "name": "$return" }
   ]

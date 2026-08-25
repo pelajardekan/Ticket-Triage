@@ -242,12 +242,12 @@ def test_admin_verification_requires_the_configured_key(monkeypatch):
     monkeypatch.setenv("ADMIN_API_KEY", "s3cret")
     get_settings(refresh=True)
 
-    denied = admin_verify.main(request("GET", "/api/admin/verify"))
+    denied = admin_verify.main(request("GET", "/api/admin-verify"))
     assert denied.status_code == 401
 
     allowed = admin_verify.main(request(
         "GET",
-        "/api/admin/verify",
+        "/api/admin-verify",
         headers={"x-admin-key": "s3cret"},
     ))
     assert allowed.status_code == 200
