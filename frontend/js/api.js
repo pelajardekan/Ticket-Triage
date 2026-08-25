@@ -42,7 +42,7 @@ async function request(path, options = {}) {
 
 export const api = {
   health: () => request("/health"),
-  verifyAdmin: () => request("/admin-verify"),
+  verifyAdmin: () => request("/verify-admin-access"),
   categories: () => request("/categories"),
   createTicket: (payload) => request("/tickets", { method: "POST", body: JSON.stringify(payload) }),
   listTickets: (filters = {}) => {
