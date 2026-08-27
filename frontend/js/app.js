@@ -76,16 +76,18 @@ function setupSidebar() {
 }
 
 function setActiveSidebarLink() {
-  const currentPage = window.location.pathname.split("/").pop();
+  const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
 
   const sideLinks = document.querySelectorAll(".side-link");
 
   sideLinks.forEach((link) => {
-    const linkPage = link.getAttribute("href").split("/").pop();
+    const href = link.getAttribute("href");
+    if (!href) return;
 
+    const linkPath = href.replace(/\/$/, "") || "/";
     link.classList.remove("active");
 
-    if (linkPage === currentPage) {
+    if (currentPath === linkPath || currentPath === `${linkPath}.html`) {
       link.classList.add("active");
     }
   });

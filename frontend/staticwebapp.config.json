@@ -14,6 +14,7 @@
     { "route": "/admin", "rewrite": "/admin/ticket-lists.html" },
     { "route": "/admin/lists", "rewrite": "/admin/ticket-lists.html" },
     { "route": "/admin/details", "rewrite": "/admin/ticket-details.html" },
+    { "route": "/admin/users", "rewrite": "/admin/users.html" },
     { "route": "/admin/settings", "redirect": "/admin", "statusCode": 302 },
     { "route": "/admin/*", "redirect": "/admin/login", "statusCode": 302 },
     { "route": "/api/*", "allowedRoles": ["anonymous"] }

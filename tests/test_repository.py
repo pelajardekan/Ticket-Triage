@@ -121,3 +121,26 @@ def test_stats_counts_by_status_and_category(repo):
     assert stats["total"] == 3
     assert stats["byStatus"]["New"] == 2
     assert stats["byCategory"]["IT Support"] == 2
+
+
+def test_list_users_groups_tickets_by_email(repo):
+    repo.create(make(name="Aiman", email="aiman@example.com", title="First ticket here"))
+    repo.create(make(name="Aiman Rahman", email="AIMAN@example.com", title="Second ticket here"))
+    repo.create(make(name="Grace Tan", email="grace.tan@example.com", title="Fees enquiry here"))
+
+    users = repo.list_users()
+    assert len(users) == 2
+
+    by_email = {user["email"]: user for user in users}
+    assert by_email["aiman@example.com"]["ticketCount"] == 2
+    assert by_email["aiman@example.com"]["name"] == "Aiman Rahman"
+    assert by_email["grace.tan@example.com"]["ticketCount"] == 1
+
+
+def test_list_users_search_matches_name_or_email(repo):
+    repo.create(make(name="Aiman", email="aiman@example.com"))
+    repo.create(make(name="Grace Tan", email="grace.tan@example.com", title="Fees enquiry here"))
+    assert len(repo.list_users(search="grace")) == 1
+    assert len(repo.list_users(search="AIMAN@")) == 1
+    assert repo.list_users(search="nobody") == []
+
