@@ -116,16 +116,19 @@ tickettriage/
 Three stages, tried in order. The first that produces a usable answer wins; any
 stage can fail without breaking ticket submission.
 
-| # | Stage | Service | Needs training | Cost |
-|---|-------|---------|----------------|------|
-| 1 | `azure-ai-language-custom` | Custom Text Classification | Yes | F0: 5,000 predictions/month |
-| 2 | `azure-ai-language-keyphrase` | Key Phrase Extraction (prebuilt) | No | F0: shares the same 5,000 |
-| 3 | `keyword-rules` | In-process ontology scoring | No | Free |
+| # | Stage | How it works |
+|---|-------|---------|
+| 1 | `azure-ai-language-custom` | Uses a trained Azure Custom Text Classification model to predict the most suitable catgeory |
+| 2 | `azure-ai-language-keyphrase` | Extracts meaningful phrases from the ticket and uses them as additional evidence for category matching |
+| 3 | `keyword-rules` | Evaluates the ticket using predefined phrases and weighted keywords |
 
-Stage 2 is the default AI path. It asks Azure AI Language for the salient
-phrases in the ticket, then scores those phrases against the category ontology
-with 1.5x the weight of the raw text. You get real AI involvement with no
-training step and no labelled data.
+Stage 1 is used when the custom model has been configured and trained. Its prediction is only accepted when the returned confidence score meets the required threshold. A low-confidence prediction is rejected, allowing the ticket to continue to the next classification stage.
+
+Stage 2 is Key Phrase Analysis. When the custom model cannot provide an acceptable result, Azure AI language can analyse the ticket and identify its most meaningful phrases.
+
+For example, a ticket mentioning `tuition fee` and `outstanding balance` provides strong evidence for Student Finance, while phrases such as `library book` and `overdue` indicate Library Services.
+
+The extracted phrases are combined with the ticket text when determining which category has the strongest match.
 
 Stage 3 scores four weighted buckets of terms:
 
