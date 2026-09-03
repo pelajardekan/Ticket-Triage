@@ -75,38 +75,94 @@ swa start frontend --api-location api
 ## Project layout
 
 ```
-tickettriage/
-├── frontend/                  Static site. No build step, no framework.
-│   ├── index.html             Ticket submission form
-│   ├── admin.html             Admin review, filters, status updates
-│   ├── staticwebapp.config.json   Runtime version, routes, headers
-│   ├── css/styles.css
-│   └── js/  api.js  submit.js  admin.js
-├── api/                       Azure Functions, Python v1 programming model
-│   ├── tickets/               GET list + POST create
-│   ├── ticket_item/           GET one + PATCH status/category
-│   ├── categories/            Reference lists for the UI
-│   ├── health/                Diagnostics and free-tier evidence
-│   ├── shared/                Code shared by all functions
-│   │   ├── categories.py      Category ontology and keyword scoring
-│   │   ├── classifier.py      Three-stage classification cascade
-│   │   ├── config.py          Settings from app settings / env vars
-│   │   ├── models.py          Validation, ticket assembly, status changes
-│   │   ├── repository.py      Cosmos DB + in-memory storage
-│   │   └── http.py            JSON responses and the admin guard
-│   ├── host.json
-│   ├── requirements.txt
-│   └── local.settings.json.sample
-├── tests/                     91 pytest tests
-├── data/
-│   ├── seed_tickets.json      18 labelled sample tickets
-│   └── ctc/generate_corpus.py Builds a Custom Text Classification corpus
-├── scripts/
-│   ├── dev_server.py          Run everything with only Python
-│   └── seed_api.py            Load sample data, measure agreement
-├── docs/architecture.svg|png
-├── Dockerfile                 Local container evidence only
-└── .github/workflows/         Test then deploy
+Ticket-Triage/
+├── frontend/                     Static site. No build step, no framework.
+│   ├── index.html                User ticket submission page
+│   ├── signin.html               User sign-in page
+│   ├── signup.html               User registration page
+│   ├── staticwebapp.config.json  Static Web Apps runtime and routing configuration
+│   ├── admin/                    Admin pages
+│   │   ├── dashboard.html        Admin dashboard
+│   │   ├── login.html            Admin login
+│   │   ├── settings.html         Admin settings
+│   │   ├── ticket-details.html   View ticket details
+│   │   ├── ticket-lists.html     View and manage tickets
+│   │   └── users.html            User management
+│   ├── user/                     User pages
+│   │   ├── settings.html         User settings
+│   │   ├── submit-ticket.html    Submit a ticket
+│   │   ├── ticket-details.html   View ticket details
+│   │   └── ticket-lists.html     View submitted tickets
+│   ├── components/               Shared HTML components
+│   │   ├── admin-sidebar.html
+│   │   ├── sidebar.html
+│   │   └── topbar.html
+│   ├── css/
+│   │   └── styles.css            Global frontend styling
+│   └── js/                       Frontend JavaScript
+│       ├── api.js                API communication
+│       ├── app.js                Main application logic
+│       ├── submit.js             Ticket submission
+│       ├── lists.js              Ticket list handling
+│       ├── details.js            Ticket detail handling
+│       ├── admin-auth.js         Admin authentication
+│       ├── admin-login.js        Admin login logic
+│       ├── admin-lists.js        Admin ticket management
+│       ├── admin-details.js      Admin ticket details
+│       └── admin-users.js        Admin user management
+│
+├── api/                          Azure Functions, Python v1 programming model
+│   ├── tickets/                  GET list + POST create tickets
+│   ├── ticket_item/              GET one + PATCH ticket status/category
+│   ├── categories/               Reference category lists for the UI
+│   ├── health/                   Health checks and diagnostics
+│   ├── admin_verify/             Admin authentication/verification
+│   ├── users/                    User-related API operations
+│   ├── shared/                   Code shared by all functions
+│   │   ├── categories.py         Category ontology and keyword scoring
+│   │   ├── classifier.py         Three-stage classification cascade
+│   │   ├── config.py             Settings from app settings / environment variables
+│   │   ├── models.py              Validation and ticket data models
+│   │   ├── repository.py          Cosmos DB + in-memory storage
+│   │   └── http.py                JSON responses and HTTP/admin helpers
+│   ├── host.json                 Azure Functions host configuration
+│   ├── requirements.txt          Backend Python dependencies
+│   └── local.settings.json.sample Local development settings template
+│
+├── tests/                        Automated pytest tests
+│   ├── conftest.py               Shared test configuration/fixtures
+│   ├── test_api.py               API tests
+│   ├── test_categories.py        Category scoring tests
+│   ├── test_classifier.py        Classifier tests
+│   ├── test_models.py            Model/validation tests
+│   └── test_repository.py        Repository/storage tests
+│
+├── data/                         Seed data and classification corpus
+│   ├── seed_tickets.json         Sample labelled tickets
+│   └── ctc/
+│       └── generate_corpus.py    Builds the Custom Text Classification corpus
+│
+├── scripts/                      Development and data utilities
+│   ├── dev_server.py             Run the application locally with Python
+│   └── seed_api.py               Load sample data and measure classifier agreement
+│
+├── docs/                         Architecture documentation
+│   ├── architecture.svg
+│   ├── architecture.png
+│   └── sysarch.png
+│
+├── Dockerfile                    Local container configuration
+│
+├── .github/
+│   └── workflows/
+│       └── azure-static-web-apps.yml  Test and deployment workflow
+│
+├── .dockerignore                 Files excluded from Docker builds
+├── .gitignore                    Files excluded from Git
+├── pytest.ini                    Pytest configuration
+├── requirements-dev.txt          Development/test dependencies
+├── swa-cli.config.json           Azure Static Web Apps CLI configuration
+└── README.md                     Project documentation
 ```
 
 ---
