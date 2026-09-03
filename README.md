@@ -8,7 +8,7 @@ Everything runs on Azure free-tier services: **Static Web Apps (Free plan)**,
 **Azure Functions managed API (Python 3.11)**, **Cosmos DB for NoSQL (free
 tier)** and **Azure AI Language (F0)**.
 
-![Architecture](docs/architecture.png)
+![Architecture](docs/sysarch.png)
 
 ---
 
