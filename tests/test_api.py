@@ -266,6 +266,53 @@ def test_reading_a_ticket_never_requires_the_admin_key(monkeypatch):
     get_settings(refresh=True)
 
 
+def test_admin_can_list_users_grouped_by_email():
+    import users as users_fn
+    create()
+    create({**VALID, "title": "Printer jammed in the library again",
+            "description": "The library printer keeps jamming on every job."})
+    create({**VALID, "name": "Grace Tan", "email": "grace.tan@example.com",
+            "title": "Course registration is closed",
+            "description": "I cannot register for next semester courses yet."})
+
+    payload = body_of(users_fn.main(request("GET", "/api/users")))
+    assert payload["count"] == 2
+    by_email = {user["email"]: user for user in payload["items"]}
+    assert by_email["aiman@example.com"]["ticketCount"] == 2
+    assert by_email["grace.tan@example.com"]["name"] == "Grace Tan"
+
+
+def test_listing_users_requires_the_admin_key_when_one_is_configured(monkeypatch):
+    import users as users_fn
+    create()
+
+    monkeypatch.setenv("ADMIN_API_KEY", "s3cret")
+    settings = get_settings(refresh=True)
+    get_repository(settings)
+
+    denied = users_fn.main(request("GET", "/api/users"))
+    assert denied.status_code == 401
+
+    allowed = users_fn.main(request("GET", "/api/users", headers={"x-admin-key": "s3cret"}))
+    assert allowed.status_code == 200
+    assert body_of(allowed)["count"] == 1
+
+    get_settings(refresh=True)
+
+
+def test_listing_users_supports_search():
+    import users as users_fn
+    create()
+    create({**VALID, "name": "Grace Tan", "email": "grace.tan@example.com",
+            "title": "Course registration is closed",
+            "description": "I cannot register for next semester courses yet."})
+
+    payload = body_of(users_fn.main(request("GET", "/api/users", params={"q": "grace"})))
+    assert payload["count"] == 1
+    assert payload["items"][0]["email"] == "grace.tan@example.com"
+
+
+
 # ---------------------------------------------------------------------------
 # Reference and health endpoints
 # ---------------------------------------------------------------------------

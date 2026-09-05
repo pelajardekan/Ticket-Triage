@@ -54,6 +54,12 @@ export const api = {
   getTicket: (id) => request(`/tickets/${encodeURIComponent(id)}`),
   updateTicket: (id, payload) =>
     request(`/tickets/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  listUsers: (filters = {}) => {
+    const qs = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v) qs.append(k, v); });
+    const suffix = qs.toString() ? `?${qs}` : "";
+    return request(`/users${suffix}`);
+  },
 };
 
 /* ---- shared view helpers ---- */

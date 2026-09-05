@@ -30,10 +30,12 @@ sys.path.insert(0, str(ROOT / "api"))
 
 import azure.functions as func  # noqa: E402
 
+import admin_verify as admin_verify_fn  # noqa: E402
 import categories as categories_fn  # noqa: E402
 import health as health_fn  # noqa: E402
 import ticket_item as ticket_item_fn  # noqa: E402
 import tickets as tickets_fn  # noqa: E402
+import users as users_fn  # noqa: E402
 
 FRONTEND = ROOT / "frontend"
 
@@ -76,6 +78,10 @@ class Handler(BaseHTTPRequestHandler):
             handler = categories_fn.main
         elif path == "/api/health":
             handler = health_fn.main
+        elif path == "/api/verify-admin-access":
+            handler = admin_verify_fn.main
+        elif path == "/api/users":
+            handler = users_fn.main
         else:
             return self._send(404, b'{"error":"No such API route."}', "application/json")
 
@@ -113,6 +119,8 @@ class Handler(BaseHTTPRequestHandler):
             path = "/admin/ticket-lists.html"
         if path == "/admin/details":
             path = "/admin/ticket-details.html"
+        if path == "/admin/users":
+            path = "/admin/users.html"
         if path == "/admin/settings":
             path = "/admin/ticket-lists.html"
         target = (FRONTEND / path.lstrip("/")).resolve()

@@ -35,6 +35,44 @@ from .models import public_view
 
 log = logging.getLogger("tickettriage.repository")
 
+def _aggregate_users(rows: List[Dict[str, Any]], search: str = "",
+                     limit: int = 100) -> List[Dict[str, Any]]:
+    """Collapse ticket requesters into one row per email address."""
+    by_email: Dict[str, Dict[str, Any]] = {}
+    for row in rows:
+        email = str(row.get("email") or "").strip().lower()
+        if not email:
+            continue
+        created = str(row.get("createdAt") or "")
+        name = str(row.get("name") or "").strip()
+        existing = by_email.get(email)
+        if existing is None:
+            by_email[email] = {
+                "email": email,
+                "name": name,
+                "ticketCount": 1,
+                "lastSubmittedAt": created,
+            }
+            continue
+        existing["ticketCount"] += 1
+        if created > existing["lastSubmittedAt"]:
+            existing["lastSubmittedAt"] = created
+            if name:
+                existing["name"] = name
+
+    users = list(by_email.values())
+    needle = search.strip().lower()
+    if needle:
+        users = [
+            user for user in users
+            if needle in user["email"] or needle in user["name"].lower()
+        ]
+    users.sort(
+        key=lambda user: (user.get("lastSubmittedAt") or "", user.get("email") or ""),
+        reverse=True,
+    )
+    return users[:limit]
+
 
 class TicketRepository:
     """Interface every storage backend implements."""
@@ -56,6 +94,10 @@ class TicketRepository:
 
     def stats(self) -> Dict[str, Any]:
         raise NotImplementedError
+    
+    def list_users(self, search: str = "", limit: int = 100) -> List[Dict[str, Any]]:
+        raise NotImplementedError
+
 
 
 # ---------------------------------------------------------------------------
@@ -120,6 +162,20 @@ class InMemoryTicketRepository(TicketRepository):
             by_status[row.get("status", "?")] = by_status.get(row.get("status", "?"), 0) + 1
             by_category[row.get("category", "?")] = by_category.get(row.get("category", "?"), 0) + 1
         return {"total": len(rows), "byStatus": by_status, "byCategory": by_category}
+
+    def list_users(self, search: str = "", limit: int = 100) -> List[Dict[str, Any]]:
+        with self._lock:
+            rows = [
+                {
+                    "email": row.get("email"),
+                    "name": row.get("name"),
+                    "createdAt": row.get("createdAt"),
+                }
+                for row in self._items.values()
+            ]
+        return _aggregate_users(rows, search=search, limit=limit)
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -200,6 +256,13 @@ class CosmosTicketRepository(TicketRepository):
             by_status[row.get("status", "?")] = by_status.get(row.get("status", "?"), 0) + 1
             by_category[row.get("category", "?")] = by_category.get(row.get("category", "?"), 0) + 1
         return {"total": total, "byStatus": by_status, "byCategory": by_category}
+
+    def list_users(self, search: str = "", limit: int = 100) -> List[Dict[str, Any]]:
+        rows = list(self._container.query_items(
+            query="SELECT c.email, c.name, c.createdAt FROM c",
+            enable_cross_partition_query=True,
+        ))
+        return _aggregate_users(rows, search=search, limit=limit)
 
 
 # ---------------------------------------------------------------------------
