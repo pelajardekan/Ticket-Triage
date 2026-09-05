@@ -24,6 +24,7 @@ def clean_env(monkeypatch):
         "COSMOS_ENDPOINT", "COSMOS_KEY", "COSMOS_DATABASE", "COSMOS_CONTAINER",
         "LANGUAGE_ENDPOINT", "LANGUAGE_KEY", "LANGUAGE_CTC_PROJECT",
         "LANGUAGE_CTC_DEPLOYMENT", "ADMIN_API_KEY", "ALLOW_ANONYMOUS_ADMIN",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING",
     ]:
         monkeypatch.delenv(name, raising=False)
 

@@ -124,6 +124,7 @@ Ticket-Triage/
 │   │   ├── config.py             Settings from app settings / environment variables
 │   │   ├── models.py              Validation and ticket data models
 │   │   ├── repository.py          Cosmos DB + in-memory storage
+│   │   ├── telemetry.py           Application Insights / OpenTelemetry setup
 │   │   └── http.py                JSON responses and HTTP/admin helpers
 │   ├── host.json                 Azure Functions host configuration
 │   ├── requirements.txt          Backend Python dependencies
@@ -136,6 +137,7 @@ Ticket-Triage/
 │   ├── test_classifier.py        Classifier tests
 │   ├── test_models.py            Model/validation tests
 │   ├── test_repository.py        Repository/storage tests
+│   ├── test_telemetry.py         Application Insights wiring and its failure modes
 │   └── test_smoke_deployed.py    Reachability checks against a deployed app
 │
 ├── data/                         Seed data and classification corpus
@@ -323,7 +325,7 @@ deployed app.
 ### Offline suite
 
 ```bash
-python -m pytest tests -q          # 97 tests, no Azure account needed
+python -m pytest tests -q          # 102 tests, no Azure account needed
 python -m pytest tests -v          # see each test name
 ```
 
@@ -334,6 +336,7 @@ python -m pytest tests -v          # see each test name
 | `test_models.py` | 25 | Validation, ticket assembly, status history, timestamp precision |
 | `test_repository.py` | 16 | CRUD, filters, ordering, limits, requester aggregation |
 | `test_api.py` | 27 | Every endpoint: status codes, JSON contract, admin auth, user listing |
+| `test_telemetry.py` | 5 | Application Insights configures once, fails silently, and never blocks a ticket |
 
 No test touches Azure or needs credentials, so they run in CI on every push.
 
@@ -371,7 +374,7 @@ red test points at the deployment rather than the code.
 Without `SMOKE_BASE_URL` these tests skip, keeping the default run offline:
 
 ```
-97 passed, 11 skipped
+102 passed, 11 skipped
 ```
 
 ### What neither layer covers
