@@ -135,7 +135,8 @@ Ticket-Triage/
 │   ├── test_categories.py        Category scoring tests
 │   ├── test_classifier.py        Classifier tests
 │   ├── test_models.py            Model/validation tests
-│   └── test_repository.py        Repository/storage tests
+│   ├── test_repository.py        Repository/storage tests
+│   └── test_smoke_deployed.py    Reachability checks against a deployed app
 │
 ├── data/                         Seed data and classification corpus
 │   ├── seed_tickets.json         Sample labelled tickets
@@ -316,8 +317,13 @@ curl https://<your-app>.azurestaticapps.net/api/health
 
 ## Testing
 
+Two layers. The offline suite runs anywhere; the smoke tests run against a
+deployed app.
+
+### Offline suite
+
 ```bash
-python -m pytest tests -q          # 91 tests
+python -m pytest tests -q          # 97 tests, no Azure account needed
 python -m pytest tests -v          # see each test name
 ```
 
@@ -326,10 +332,54 @@ python -m pytest tests -v          # see each test name
 | `test_categories.py` | 13 | Ontology structure, word-boundary matching, confidence maths |
 | `test_classifier.py` | 16 | All three stages, ambiguous terms, cascade fallback (Azure calls mocked) |
 | `test_models.py` | 25 | Validation, ticket assembly, status history, timestamp precision |
-| `test_repository.py` | 14 | CRUD, filters, ordering, limits |
-| `test_api.py` | 23 | Every endpoint: status codes, JSON contract, admin auth |
+| `test_repository.py` | 16 | CRUD, filters, ordering, limits, requester aggregation |
+| `test_api.py` | 27 | Every endpoint: status codes, JSON contract, admin auth, user listing |
 
 No test touches Azure or needs credentials, so they run in CI on every push.
+
+### Deployment smoke tests
+
+The offline suite cannot tell you whether the deployed app actually reached
+Cosmos DB or Azure AI Language, because both failures are silent by design: the
+repository falls back to in-memory storage and the classifier falls back to
+keyword rules rather than erroring. A site that looks healthy can be storing
+tickets nowhere and classifying without AI. `test_smoke_deployed.py` closes
+that gap.
+
+```bash
+# Bash
+SMOKE_BASE_URL=https://<your-app>.azurestaticapps.net \
+    python -m pytest tests/test_smoke_deployed.py -v
+```
+
+```powershell
+# PowerShell
+$env:SMOKE_BASE_URL = "https://<your-app>.azurestaticapps.net"
+python -m pytest tests/test_smoke_deployed.py -v
+```
+
+| Checks | How |
+|--------|-----|
+| Cosmos DB is live | `/api/health` reports `storage: cosmos`, not `in-memory` |
+| Azure AI Language is live | `/api/health` reports `languageConfigured: true` and a `classifierChain` led by an `azure-ai-language-*` stage |
+| The API answers | list, detail and categories endpoints all return 200 with the expected shape |
+| The frontend was deployed | each page returns 200 **and** references the script it needs; every `js/*.js` file is served with a JavaScript content type |
+
+Each assertion names the app setting or resource to check when it fails, so a
+red test points at the deployment rather than the code.
+
+Without `SMOKE_BASE_URL` these tests skip, keeping the default run offline:
+
+```
+97 passed, 11 skipped
+```
+
+### What neither layer covers
+
+Browser behaviour. The smoke tests prove the JavaScript is delivered and
+referenced by the right pages; they do not execute it. Clicking through submit,
+list, detail and an admin status update is still a manual step before a
+release.
 
 ---
 

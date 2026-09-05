@@ -20,13 +20,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     settings = get_settings()
     repo = get_repository(settings)
 
+    # route GET
     if req.method == "GET":
         try:
             limit = int(req.params.get("limit") or settings.max_page_size)
         except ValueError:
             return error_response("limit must be a whole number.", 400)
-        limit = max(1, min(limit, settings.max_page_size))
+        limit = max(1, min(limit, settings.max_page_size))  # clamp the limit
 
+        #  query with filters
         items = repo.list(
             category=req.params.get("category", "").strip(),
             status=req.params.get("status", "").strip(),
@@ -34,6 +36,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             search=req.params.get("q", "").strip(),
             limit=limit,
         )
+        # return the ticket list
         return json_response({"count": len(items), "items": items})
 
     # ---- POST -------------------------------------------------------

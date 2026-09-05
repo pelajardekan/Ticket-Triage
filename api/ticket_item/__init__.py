@@ -19,14 +19,18 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     settings = get_settings()
     repo = get_repository(settings)
 
+    # read id from the route
     ticket_id = req.route_params.get("id", "").strip()
     if not ticket_id:
+        # validate id
         return error_response("Ticket id is required.", 400)
 
+    # fetch from DB
     ticket = repo.get(ticket_id)
     if ticket is None:
         return error_response("Ticket not found.", 404)
 
+    # return details
     if req.method == "GET":
         return json_response(public_view(ticket))
 
